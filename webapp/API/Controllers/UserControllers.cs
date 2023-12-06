@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
-// [Authorize]
+[Authorize]
 public class UsersController : BaseApiController
 {
     private readonly DataContext _dataContext;
@@ -30,3 +30,4 @@ public class UsersController : BaseApiController
         return await _dataContext.Users.FindAsync(id);
     }
 }
+
