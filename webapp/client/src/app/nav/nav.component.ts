@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core'
-import { AccountService } from '../_services/account.service'
-import { Observable, of } from 'rxjs'
-import { User } from '../_models/user'
-import { Router } from '@angular/router'
-import { ToastrService } from 'ngx-toastr'
+import { Component, OnInit } from "@angular/core"
+import { User } from "../_models/user"
+import { ToastrService } from "ngx-toastr"
+import { Router } from "@angular/router"
+import { AccountService } from "../_services/account.service"
+import { Observable, of } from "rxjs"
+
 
 @Component({
   selector: 'app-nav',
@@ -12,14 +13,20 @@ import { ToastrService } from 'ngx-toastr'
 })
 export class NavComponent implements OnInit {
   model: any = {}
+  user: User | null = null
   currentUser$: Observable<User | null> = of(null)  // isLogin = false
 
 
 
 
   constructor(private toastr: ToastrService, private router: Router, private accountService: AccountService) { }
+
   ngOnInit(): void {
     this.currentUser$ = this.accountService.currentUser$
+    this.currentUser$.subscribe({
+      next: user => this.user = user
+    })
+
   }
 
   getCurrentUser() {

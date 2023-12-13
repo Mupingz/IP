@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
-import { NavComponent } from './nav/nav.component'
+
 import { FormsModule } from '@angular/forms'
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown'
 import { HomeComponent } from './home/home.component'
@@ -16,6 +16,8 @@ import { MemberDetailComponent } from './members/member-detail/member-detail.com
 import { ListsComponent } from './lists/lists.component'
 import { MessagesComponent } from './messages/messages.component'
 import { Toast, ToastrModule } from 'ngx-toastr'
+import { NavComponent } from './nav/nav.component'
+import { SharedModule } from './_modules/shared.module'
 
 @NgModule({
   declarations: [
@@ -35,8 +37,7 @@ import { Toast, ToastrModule } from 'ngx-toastr'
     BrowserAnimationsModule,
     FontAwesomeModule,
     FormsModule,
-    ToastrModule.forRoot(),
-    BsDropdownModule.forRoot()
+    SharedModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

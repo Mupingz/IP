@@ -21,7 +21,7 @@
         </form>
 
         <div dropdown class="dropdown" *ngIf="currentUser$|async">
-            <a dropdownToggle class="dropdown-toggle text-light">Hello User</a>
+            <a dropdownToggle class="dropdown-toggle text-light">Hello {{user?.username| titlecase}}</a>
             <div *dropdownMenu="" class="dropdown-menu">
                 <a href="" class="dropdown-item">Profile</a>
                 <a href="" class="dropdown-item" (click)="logout()">Log-out</a>
