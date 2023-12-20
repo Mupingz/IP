@@ -1,12 +1,10 @@
-using System.Text;
 using API.Data;
 using API.Extensions;
 using API.Interfaces;
 using API.Middleware;
 using API.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,5 +26,20 @@ app.UseAuthorization();
 app.UseAuthentication();
 
 app.MapControllers();
+
+using var scope = app.Services.CreateScope();
+var service = scope.ServiceProvider;
+try
+{
+    var dataContext = service.GetRequiredService<DataContext>();
+    await dataContext.Database.MigrateAsync();
+    await Seed.SeedUsers(dataContext);
+}
+catch (Exception e)
+{
+    var log = service.GetRequiredService<ILogger<Program>>();
+    log.LogError(e, "an error occurred during migration !!");
+}
+
 app.Run();
 

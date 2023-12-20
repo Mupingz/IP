@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
 
   constructor(private http: HttpClient) { }
   ngOnInit(): void {
-    throw new Error('Method not implemented.')
+    //   throw new Error('Method not implemented.');
   }
   regisToggle() {
     this.regisMode = !this.regisMode

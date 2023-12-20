@@ -44,7 +44,7 @@ export class NavComponent implements OnInit {
         //console.log(response)
 
       },
-      error: err => this.toastr.error(err.error) //anything that's not in 200 range of HTTP status
+      //error: err => this.toastr.error(err.error) //anything that's not in 200 range of HTTP status
     })
   }
   logout() {
