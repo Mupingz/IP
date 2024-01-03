@@ -38,12 +38,12 @@ public class UserRepository : IUserRepository
         return await _dataContext.Users.FindAsync(id);
     }
 
-    // public async Task<AppUser?> GetUserByUserNameAsync(string username)
-    // {
-    //     return await _dataContext.Users
-    //     .Include(user => user.Photos)
-    //     .SingleOrDefaultAsync(user => user.UserName == username);
-    // }
+    public async Task<AppUser?> GetUserByUserNameAsync(string username)
+    {
+        return await _dataContext.Users
+        //.Include(user => user.Photos)
+        .SingleOrDefaultAsync(user => user.UserName == username);
+    }
 
     // public async Task<IEnumerable<AppUser>> GetUsersAsync()
     // {
