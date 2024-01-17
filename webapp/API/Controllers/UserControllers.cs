@@ -2,6 +2,7 @@
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +24,7 @@ public class UsersController : BaseApiController
         _userRepository = userRepository;
 
     }
-    private async Task<AppUser?> _GetUser()
+    private async Task<AppUser> _GetUser()
     {
         var username = User.GetUsername();
         if (username is null) return null;
@@ -32,12 +33,29 @@ public class UsersController : BaseApiController
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+    public async Task<ActionResult<PageList<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
     {
-        return Ok(await _userRepository.GetMembersAsync());
+        var username = User.GetUsername();
+        if (username is null) return NotFound();
+
+        var currentUser = await _userRepository.GetUserByUserNameAsync(username);
+        if (currentUser is null) return NotFound();
+        userParams.CurrentUserName = currentUser.UserName;
+        if (string.IsNullOrEmpty(userParams.Gender))
+        {
+            if (currentUser.Gender != "non-binary")
+                userParams.Gender = currentUser.Gender == "male" ? "female" : "male";
+            else
+                userParams.Gender = "non-binary";
+        }
+
+        var pages = await _userRepository.GetMembersAsync(userParams);
+        Response.AddPaginationHeader(
+            new PaginationHeader(pages.CurrentPage, pages.PageSize, pages.TotalCount, pages.TotalPages));
+        return Ok(pages);
     }
     [HttpGet("{id}")]
-    public async Task<ActionResult<MemberDto?>> GetUser(int id)
+    public async Task<ActionResult<MemberDto>> GetUser(int id)
     {
         var user = await _userRepository.GetUserByIdAsync(id);
         return _mapper.Map<MemberDto>(user);
@@ -45,7 +63,7 @@ public class UsersController : BaseApiController
 
 
     [HttpGet("username/{username}")]
-    public async Task<ActionResult<MemberDto?>> GetUserByUserName(string username)
+    public async Task<ActionResult<MemberDto>> GetUserByUserName(string username)
     {
         // var user = await _userRepository.GetUserByUserNameAsync(username);
         // return _mapper.Map<MemberDto>(user);
