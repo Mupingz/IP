@@ -34,17 +34,25 @@ public class UserRepository : IUserRepository
         var maxBirthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MinAge));
         var query = _dataContext.Users.AsQueryable();
 
-
         query = query.Where(user => user.BirthDate >= minBirthDate && user.BirthDate <= maxBirthDate);
         query = query.Where(user => user.UserName != userParams.CurrentUserName);
+
+        query = userParams.OrderBy switch
+        {
+            "created" => query.OrderByDescending(user => user.Created),
+            _ => query.OrderByDescending(user => user.LastActive),
+        };
+
+
+
         if (userParams.Gender != "non-binary")
             query = query.Where(user => user.Gender == userParams.Gender);
         query.AsNoTracking();
         return await PageList<MemberDto>.CreateAsync(
             query.ProjectTo<MemberDto>(_mapper.ConfigurationProvider),
-            userParams.PageNumber,
-            userParams.PageSize);
+            userParams.PageNumber, userParams.PageSize);
     }
+
 
     public async Task<AppUser?> GetUserByIdAsync(int id)
     {
@@ -56,6 +64,12 @@ public class UserRepository : IUserRepository
         return await _dataContext.Users
         .Include(user => user.Photos)
         .SingleOrDefaultAsync(user => user.UserName == username);
+    }
+    public async Task<AppUser?> GetUserByUserNameWithOutPhotoAsync(string username)
+    {
+        return await _dataContext.Users
+         //.Include(user => user.Photos)
+         .SingleOrDefaultAsync(user => user.UserName == username);
     }
 
     // public async Task<IEnumerable<AppUser>> GetUsersAsync()
@@ -74,4 +88,6 @@ public class UserRepository : IUserRepository
     {
         _dataContext.Entry(user).State = EntityState.Modified;
     }
+
+
 }
