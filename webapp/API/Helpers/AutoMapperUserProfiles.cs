@@ -12,6 +12,19 @@ public class AutoMapperUserProfiles : Profile
 {
     public AutoMapperUserProfiles()
     {
+        CreateMap<Message, MessageDto>()
+            .ForMember(
+                msdto => msdto.SenderPhotoUrl,
+                opt => opt.MapFrom(
+                        ms => ms.Sender.Photos.FirstOrDefault(photo => photo.IsMain).Url
+                    )
+            )
+            .ForMember(
+                msdto => msdto.RecipientPhotoUrl,
+                opt => opt.MapFrom(
+                        ms => ms.Recipient.Photos.FirstOrDefault(photo => photo.IsMain).Url
+                    )
+            );
         CreateMap<AppUser, MemberDto>()
         .ForMember(
             user => user.Age,
