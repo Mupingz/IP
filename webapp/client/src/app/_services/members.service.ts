@@ -1,21 +1,20 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { environment } from 'src/environments/environment'
 import { Member } from '../_models/mamber'
-import { Injectable } from '@angular/core'
+import { Injectable, OnInit } from '@angular/core'
 import { map, of, take } from 'rxjs'
-import { PaginationResult } from '../_models/Pagination'
 import { UserParams } from '../_models/userParams'
 import { User } from '../_models/user'
-import { AccountService } from './account.service'
 import { getPaginationHeaders, getPaginationResult } from './paginationHelper'
 import { ListParams } from './listParams'
+import { Message } from '../_models/message'
 
 @Injectable({
   providedIn: 'root'
 })
 
 
-export class MembersService {
+export class MembersService implements OnInit{
   //userParams: UserParams | undefined
   user: User | undefined
   memberCache = new Map()
@@ -23,12 +22,10 @@ export class MembersService {
   members: Member[] = []
 
 
-  constructor(private http: HttpClient,) {
-
+  constructor(private http: HttpClient,) { }
+  ngOnInit(): void {
+    throw new Error('Method not implemented.')
   }
-
-
-
   private _key(userParams: UserParams) {
     return Object.values(userParams).join('_')
   }
@@ -46,30 +43,7 @@ export class MembersService {
     const url = this.baseUrl + 'users'
     return getPaginationResult<Member[]>(url, params, this.http)
   }
-  // private getPaginationHeaders(pageNumber: number, pageSize: number) {
-  //   let params = new HttpParams()
-  //   params = params.append('pageNumber', pageNumber)
-  //   params = params.append('pageSize', pageSize)
-  //   return params
-  // }
-  // private getPaginationResult<T>(url: string, params: HttpParams, key: string | null = null) {
-  //   const paginationResult: PaginationResult<T> = new PaginationResult<T>
-  //   return this.http.get<T>(url, { observe: 'response', params }).pipe(
-  //     map(response => {
-  //       if (response.body)
-  //         paginationResult.result = response.body
-
-  //       const pagination = response.headers.get('Pagination')
-  //       if (pagination)
-  //         paginationResult.pagination = JSON.parse(pagination)
-
-  //       if (key)
-  //         this.memberCache.set(key, paginationResult)
-  //       return paginationResult
-  //     })
-  //   )
-  // }
-
+  
   getMember(username: string) {
     const cache = [...this.memberCache.values()]
     const members = cache.reduce((arr, item) => arr.concat(item.result), [])

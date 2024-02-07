@@ -50,6 +50,7 @@ public class LikesRepository : IlikesRepository
             City = user.City,
             Country = user.Country,
             Age = user.BirthDate.CalculateAge(),
+            Photos = user.Photos.ToList(),
             MainPhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain).Url,
             Id = user.Id
         });
