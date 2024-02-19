@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core'
-import { Member } from '../_models/mamber'
-import { MembersService } from '../_services/members.service'
-import { Pagination } from '../_models/Pagination'
-import { ListParams } from '../_services/listParams'
+import { Component, OnInit } from '@angular/core';
+import { Member } from '../_models/member';
+import { MembersService } from '../_services/members.service';
+import { Pagination } from '../_models/Pagination';
+import { ListParams } from '../_models/listParams';
 
 @Component({
   selector: 'app-lists',
@@ -15,30 +15,30 @@ export class ListsComponent implements OnInit {
   pageNumber = 1
   pageSize = 5
   pagination: Pagination | undefined
-
-  constructor(private memberService: MembersService) { }
+  constructor(private memberService: MembersService) {}
+  
 
   ngOnInit(): void {
     this.loadLikes()
   }
 
-  loadLikes() {
-    const listParams: ListParams = {
-      pageNumber: this.pageNumber,
-      pageSize: this.pageSize,
-      predicate: this.predicate
-    }
-    this.memberService.getLikes(listParams).subscribe({
-      next: reponse => {
-        this.members = reponse.result
-        this.pagination = reponse.pagination
-      }
-    })
-  }
   pageChanged(event: any) {
     if (this.pageNumber === event.page) return
     this.pageNumber = event.page
     this.loadLikes()
   }
 
+  loadLikes() { 
+    const listParams: ListParams = {
+      pageNumber : this.pageNumber,
+      pageSize : this.pageSize,
+      predicate : this.predicate
+    }
+    this.memberService.getLikes(listParams).subscribe({
+      next: response => {
+        this.members = response.result
+        this.pagination = response.pagination
+      }
+    })
+  }
 }

@@ -29,7 +29,6 @@
                                 {{message.content}}
                             </p>
                         </div>
-
                     </div>
 
                     <div [class]="message.senderUsername !== username 
@@ -69,7 +68,8 @@
                     class="form-control input-sm" placeholder="Send direct message">
                 <div class="input-group-append">
                     <button [disabled]="!messageForm.valid" class="btn btn-primary ms-2" type="submit">
-                        <fa-icon [icon]="faPaperPlane"></fa-icon> Send</button>
+                        <fa-icon [icon]="faPaperPlane"></fa-icon> Send
+                    </button>
                 </div>
             </div>
         </form>

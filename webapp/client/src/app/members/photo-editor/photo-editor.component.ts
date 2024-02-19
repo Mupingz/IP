@@ -1,26 +1,25 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input, OnInit } from '@angular/core';
 import { faTrashCan, faStar } from '@fortawesome/free-regular-svg-icons'
-import { faBan, faUpload } from '@fortawesome/free-solid-svg-icons'
-import { FileUploader } from 'ng2-file-upload'
-import { take } from 'rxjs'
-import { Member } from 'src/app/_models/mamber'
-import { Photo } from 'src/app/_models/photo'
-import { User } from 'src/app/_models/user'
-import { AccountService } from 'src/app/_services/account.service'
-import { MembersService } from 'src/app/_services/members.service'
-import { environment } from 'src/environments/environment'
+import { faBan, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { FileUploader } from 'ng2-file-upload';
+import { take } from 'rxjs';
+import { Member } from 'src/app/_models/member';
+import { Photo } from 'src/app/_models/photo';
+import { User } from 'src/app/_models/user';
+import { AccountService } from 'src/app/_services/account.service';
+import { MembersService } from 'src/app/_services/members.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-photo-editor',
   templateUrl: './photo-editor.component.html',
   styleUrls: ['./photo-editor.component.css']
 })
-export class PhotoEditorComponent implements OnInit {
+export class PhotoEditorComponent implements OnInit{
   faTrashCan = faTrashCan
   faStar = faStar
   faUpload = faUpload
   faBan = faBan
-
   @Input() member: Member | undefined
 
   uploader: FileUploader | undefined
@@ -28,11 +27,20 @@ export class PhotoEditorComponent implements OnInit {
   baseUrl = environment.apiUrl
   user: User | undefined | null
 
-  constructor(private accountService: AccountService, private memberService: MembersService) {
+  constructor(private memberService: MembersService, private accountService: AccountService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: user => this.user = user
     })
+  }
 
+  deletePhoto(photoId: number) {
+    this.memberService.deletePhoto(photoId).subscribe({
+      next: _ => {
+        if (this.member) {
+          this.member.photos = this.member.photos.filter(photo => photo.id !== photoId)
+        }
+      }
+    })
   }
 
   setMainPhoto(photo: Photo) {
@@ -50,7 +58,7 @@ export class PhotoEditorComponent implements OnInit {
       }
     })
   }
-
+  
   ngOnInit(): void {
     this.initUploader()
   }
@@ -84,14 +92,5 @@ export class PhotoEditorComponent implements OnInit {
       }
     }
   }
-  deletePhoto(photoId: number) {
-    this.memberService.deletePhoto(photoId).subscribe({
-      next: _ => {
-        if (this.member) {
-          this.member.photos = this.member.photos.filter(photo => photo.id !== photoId)
-        }
-      }
-    })
-  }
-
 }
+

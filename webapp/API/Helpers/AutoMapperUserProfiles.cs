@@ -1,11 +1,11 @@
-﻿
+﻿using System;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
 using AutoMapper;
+using Company.ClassLibrary1;
 
 namespace API.Helpers;
-
 #nullable disable
 
 public class AutoMapperUserProfiles : Profile
@@ -25,22 +25,29 @@ public class AutoMapperUserProfiles : Profile
                         ms => ms.Recipient.Photos.FirstOrDefault(photo => photo.IsMain).Url
                     )
             );
+
         CreateMap<AppUser, MemberDto>()
         .ForMember(
             user => user.Age,
-            x => x.MapFrom(
+            opt => opt.MapFrom(
                 user => user.BirthDate.CalculateAge()
             )
         )
+
         .ForMember(
-                user => user.MainPhotoUrl,
-                opt => opt.MapFrom(
-                    user => user.Photos.FirstOrDefault(photo => photo.IsMain == true).Url
-                    )
-                );
-        ;
+            user => user.MainPhotoUrl,
+            opt => opt.MapFrom(
+            user => user.Photos.FirstOrDefault(p => p.IsMain == true).Url
+            )
+        );
+
         CreateMap<Photo, PhotoDto>();
+
         CreateMap<MemberUpdateDto, AppUser>();
+
         CreateMap<RegisterDto, AppUser>();
+
     }
+
+
 }

@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
 
-public class DataContext : IdentityDbContext<
+public class DataContext : IdentityDbContext
+<
     AppUser,
     AppRole,
     int,
@@ -16,16 +17,23 @@ public class DataContext : IdentityDbContext<
     IdentityUserToken<int>
 >
 {
-    public DataContext(DbContextOptions options) : base(options)
-    {
-
-    }
-    //public DbSet<AppUser> Users { get; set; }
-    public DbSet<UserLike> Likes { get; set; }
     public DbSet<Message> Messages { get; set; }
+    public DataContext(DbContextOptions options) : base(options) { }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<AppUser>()
+            .HasMany(appUser => appUser.UserRoles)
+            .WithOne(appUserRole => appUserRole.User)
+            .HasForeignKey(appUserRole => appUserRole.UserId)
+            .IsRequired();
+
+        modelBuilder.Entity<AppRole>()
+            .HasMany(appRole => appRole.UserRoles)
+            .WithOne(appUserRole => appUserRole.Role)
+            .HasForeignKey(appUserRole => appUserRole.RoleId)
+            .IsRequired();
 
         modelBuilder.Entity<UserLike>().HasKey(pk => new { pk.SourceUserId, pk.LikedUserId });
 
@@ -50,19 +58,8 @@ public class DataContext : IdentityDbContext<
             .HasOne(message => message.Sender)
             .WithMany(appuser => appuser.MessagesSent)
             .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<AppUser>()
-            .HasMany(appUser => appUser.UserRoles)
-            .WithOne(appUserRole => appUserRole.User)
-            .HasForeignKey(appUserRole => appUserRole.UserId)
-            .IsRequired();
-
-        modelBuilder.Entity<AppRole>()
-            .HasMany(appRole => appRole.UserRoles)
-            .WithOne(appUserRole => appUserRole.Role)
-            .HasForeignKey(appUserRole => appUserRole.RoleId)
-            .IsRequired();
     }
 
+    //public DbSet<AppUser> Users { get; set; }
+    public DbSet<UserLike> Likes { get; set; }
 }
-

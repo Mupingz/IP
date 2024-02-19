@@ -1,4 +1,4 @@
-﻿using API.Helpers;
+﻿using System;
 using API.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
@@ -17,6 +17,7 @@ public class ImageService : IImageService
             config.Value.ApiSecret
         ));
     }
+
     public async Task<ImageUploadResult> AddImageAsync(IFormFile file)
     {
         var uploadResualt = new ImageUploadResult();
@@ -40,5 +41,3 @@ public class ImageService : IImageService
         return await _cloudinary.DestroyAsync(deleteParams);
     }
 }
-
-

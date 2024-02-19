@@ -1,5 +1,4 @@
 namespace API.Entities;
-
 public class Message
 {
     public int Id { get; set; }
@@ -15,5 +14,4 @@ public class Message
     public string? RecipientUsername { get; set; }
     public AppUser? Sender { get; set; }
     public AppUser? Recipient { get; set; }
-
 }

@@ -1,55 +1,62 @@
-﻿using API.Data;
+﻿using System.Security.Cryptography;
+using System.Text;
+using API.Controllers;
+using API.Data;
 using API.DTOs;
 using API.Entities;
-using API.Interfaces;
+using API.interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Controllers;
+namespace Company.ClassLibrary1;
+
+#nullable disable
 
 public class AccountController : BaseApiController
 {
-    private readonly IMapper _mapper;
     private readonly UserManager<AppUser> _userManager;
+    private readonly IMapper _mapper;
     private readonly ITokenService _tokenService;
-
-    public AccountController(IMapper mapper, UserManager<AppUser> userManager, ITokenService tokenService)
-
+    public AccountController(UserManager<AppUser> userManager, IMapper mapper, ITokenService tokenService) //ctrl + . select create and assign field
     {
-        _mapper = mapper;
         _userManager = userManager;
+        _mapper = mapper;
         _tokenService = tokenService;
+
     }
+
 
     private async Task<bool> isUserExists(string username)
     {
         return await _userManager.Users.AnyAsync(user => user.UserName == username.ToLower());
-
-
+        // return await _dataContext.Users.AnyAsync(user => user.UserName == username.ToLower());
     }
 
-    [HttpPost("Register")] //api/account/register
+
+    [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
         if (await isUserExists(registerDto.Username!))
             return BadRequest("username is already exists");
 
         var user = _mapper.Map<AppUser>(registerDto);
-
         user.UserName = registerDto.Username!.Trim().ToLower();
 
         var appUser = await _userManager.CreateAsync(user, registerDto.Password!);
         if (!appUser.Succeeded) return BadRequest(appUser.Errors);
 
+        var role = await _userManager.AddToRoleAsync(user, "Member");
+        if (!role.Succeeded) return BadRequest(role.Errors);
+
         return new UserDto
         {
             Username = user.UserName,
-            Token = _tokenService.CreateToken(user),
+            Token = await _tokenService.CreateToken(user),
             Aka = user.Aka,
             Gender = user.Gender
-
         };
     }
 
@@ -57,21 +64,23 @@ public class AccountController : BaseApiController
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
         var user = await _userManager.Users
-                       .Include(photo => photo.Photos)
-                       .SingleOrDefaultAsync(user =>
-                           user.UserName == loginDto.Username.ToLower());
+                        .Include(photo => photo.Photos)
+                        .SingleOrDefaultAsync(user =>
+                            user.UserName == loginDto.UserName.ToLower());
 
         if (user is null) return Unauthorized("invalid username");
-        var appUser = await _userManager.CheckPasswordAsync(user, loginDto.Password!);
+        var appUser = await _userManager.CheckPasswordAsync(user, loginDto.Password!); //<--
         if (!appUser) return BadRequest("invalid password");
+
         return new UserDto
         {
             Username = user.UserName,
-            Token = _tokenService.CreateToken(user),
+            Token = await _tokenService.CreateToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain)?.Url,
             Aka = user.Aka,
             Gender = user.Gender
-
         };
+
     }
+
 }

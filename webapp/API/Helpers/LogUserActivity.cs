@@ -13,9 +13,8 @@ public class LogUserActivity : IAsyncActionFilter
         if (user is null) return;
         if (user.Identity is not null && !user.Identity.IsAuthenticated) return;
 
-        //var username = user.GetUsername();
+        // var username = user.GetUsername();
         var userId = user.GetUserId();
-
         if (userId is null) return;
 
         var repository = resultContext.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
@@ -24,7 +23,5 @@ public class LogUserActivity : IAsyncActionFilter
 
         userRepository.LastActive = DateTime.UtcNow;
         await repository.SaveAllAsync();
-
-
     }
 }

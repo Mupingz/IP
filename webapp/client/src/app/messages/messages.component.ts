@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core'
-import { Message } from '../_models/message'
-import { Pagination } from '../_models/Pagination'
-import { MessageService } from '../_services/message.service'
-import { faEnvelopeOpen, faEnvelope, faPaperPlane, faTrashCan } from '@fortawesome/free-regular-svg-icons'
-
+import { Component, OnInit } from '@angular/core';
+import { MessageService } from '../_services/message.service';
+import { Pagination } from '../_models/Pagination';
+import { Message } from '../_models/message';
+import { faEnvelopeOpen,faEnvelope,faPaperPlane,faTrashCan } from '@fortawesome/free-regular-svg-icons'
 
 @Component({
   selector: 'app-messages',
@@ -28,12 +27,13 @@ export class MessagesComponent implements OnInit {
   ngOnInit(): void {
     this.loadMessage()
   }
+
   deleteMessage(id: number) {
     this.messageService.deleteMessage(id).subscribe({
       next: _ => this.messages?.splice(this.messages.findIndex(ms => ms.id === id), 1)
     })
   }
-
+  
   loadMessage() {
     this.loading = true
     this.messageService.getMessages(this.pageNumber, this.pageSize, this.label).subscribe({

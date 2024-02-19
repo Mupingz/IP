@@ -1,4 +1,5 @@
-﻿using API.Data;
+﻿using System;
+using API.Data;
 using API.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +10,13 @@ namespace API.Controllers;
 
 public class ErrorController : BaseApiController
 {
-    private DataContext _dataContext;
+    private readonly DataContext _dataContext;
 
     public ErrorController(DataContext dataContext)
     {
         _dataContext = dataContext;
     }
+
     [Authorize]
     [HttpGet("auth")]
     public ActionResult<string> GetSecret()
@@ -33,9 +35,8 @@ public class ErrorController : BaseApiController
     [HttpGet("server-error")]
     public ActionResult<string> GetServerError()
     {
-
         var user = _dataContext.Users.Find(-1);
-        var stringUser = user.ToString();
+        var stringUser = user.ToString();//can not turn null to string = no reference exception
         return stringUser;
 
     }
@@ -47,5 +48,3 @@ public class ErrorController : BaseApiController
     }
 
 }
-
-

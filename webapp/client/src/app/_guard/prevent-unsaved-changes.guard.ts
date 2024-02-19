@@ -1,5 +1,5 @@
-import { CanDeactivateFn } from '@angular/router'
-import { MemberProfileComponent } from '../members/member-profile/member-profile.component'
+import { CanDeactivateFn } from "@angular/router"
+import { MemberProfileComponent } from "../members/member-profile/member-profile.component"
 
 export const preventUnsavedChangesGuard: CanDeactivateFn<MemberProfileComponent> = (component) => {
   if (component.profileForm?.dirty) {

@@ -17,6 +17,7 @@
             <app-member-card [member]="member"></app-member-card>
         </div>
     </div>
+
     <div class="d-flex justify-content-center" *ngIf="pagination">
         <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems" [itemsPerPage]="pagination.itemsPerpage"
             [maxSize]="10" [(ngModel)]="pagination.currentPage" (pageChanged)="pageChanged($event)"
@@ -24,5 +25,4 @@
 
         </pagination>
     </div>
-
 </div>

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240131025856_MessageEntityAdded")]
+    [Migration("20240131025836_MessageEntityAdded")]
     partial class MessageEntityAdded
     {
         /// <inheritdoc />

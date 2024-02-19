@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core'
-import { NgxSpinnerService } from 'ngx-spinner'
+import { Injectable } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BusyService {
-  count = 0;
+  count = 0
   constructor(private spinnerService: NgxSpinnerService) { }
 
   busy(name?: string | undefined) {
@@ -13,9 +13,11 @@ export class BusyService {
     this.spinnerService.show(name, {
       type: 'square-spin',
       bdColor: 'rgba(255,255,255,0)',
-      color: '#E95420'
+      color: '#de6f92'
     })
+
   }
+
   idle(name?: string | undefined) {
     this.count--
     if (this.count <= 0) {
@@ -23,6 +25,4 @@ export class BusyService {
       this.spinnerService.hide(name)
     }
   }
-
 }
-

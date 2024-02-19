@@ -9,14 +9,15 @@ namespace API.Controllers;
 
 public class LikesController : BaseApiController
 {
-    private readonly IUserRepository _userRepository;
     private readonly IlikesRepository _likeRepository;
+    private readonly IUserRepository _userRepository;
 
-    public LikesController(IUserRepository userRepository, IlikesRepository likeRepository)
+    public LikesController(IlikesRepository likeRepository, IUserRepository userRepository)
     {
-        _userRepository = userRepository;
         _likeRepository = likeRepository;
+        _userRepository = userRepository;
     }
+
     [HttpPost("{username}")]
     public async Task<ActionResult> AddLike(string username)
     {
@@ -44,15 +45,15 @@ public class LikesController : BaseApiController
         if (await _userRepository.SaveAllAsync()) return Ok(); //not good, but work
 
         return BadRequest("Something has gone wrong!");
-
     }
+
     [HttpGet]
     public async Task<ActionResult<PageList<LikeDto>>> GetUserLikes([FromQuery] LikesParams likesParams)
     {
         var string_user_id = User.GetUserId();
         if (string_user_id is null) return NotFound();
-        likesParams.UserId = (int)string_user_id;
 
+        likesParams.UserId = (int)string_user_id;
 
         var users = await _likeRepository.GetUserLikes(likesParams);
 
@@ -66,3 +67,4 @@ public class LikesController : BaseApiController
         return Ok(users);
     }
 }
+

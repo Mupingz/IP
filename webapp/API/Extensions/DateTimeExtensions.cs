@@ -1,4 +1,6 @@
-﻿namespace API.Extensions;
+﻿using System;
+
+namespace API.Extensions;
 
 public static class DateTimeExtensions
 {
@@ -6,8 +8,7 @@ public static class DateTimeExtensions
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
         var age = today.Year - birthdate.Year;
-        if (birthdate > today.AddYears(-age))
-            age--;
+        if (birthdate > today.AddYears(-age)) age--;
         return age;
     }
 }

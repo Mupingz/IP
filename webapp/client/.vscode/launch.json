@@ -20,7 +20,7 @@
       // If you have changed target frameworks, make sure to update the program path.
       "program": "${workspaceFolder}/TinnerApp/API/bin/Debug/net7.0/API.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/webapp/API",
+      "cwd": "${workspaceFolder}/TinnerApp/API",
       "stopAtEntry": false,
       // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
       "serverReadyAction": {
@@ -38,6 +38,13 @@
       "name": ".NET Core Attach",
       "type": "coreclr",
       "request": "attach"
+    },
+    {
+      "name": "ng test",
+      "type": "chrome",
+      "request": "launch",
+      "preLaunchTask": "npm: test",
+      "url": "http://localhost:9876/debug.html"
     }
   ]
 }

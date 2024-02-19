@@ -1,6 +1,9 @@
-﻿namespace API.Errors;
+﻿using System;
+
+namespace API.Errors;
 
 #nullable disable
+
 public class ApiException
 {
     public ApiException(int statusCode, string messages, string details)

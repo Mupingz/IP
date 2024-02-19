@@ -1,43 +1,45 @@
-import { Component, OnInit } from '@angular/core'
-import { Observable, take } from 'rxjs'
-import { Pagination } from 'src/app/_models/Pagination'
-import { Member } from 'src/app/_models/mamber'
-import { User } from 'src/app/_models/user'
-import { UserParams } from 'src/app/_models/userParams'
-import { AccountService } from 'src/app/_services/account.service'
-import { MembersService } from 'src/app/_services/members.service'
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { GalleryModule } from 'ng-gallery';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { TimeagoModule } from 'ngx-timeago';
+import { Observable, take } from 'rxjs';
+import { Pagination } from 'src/app/_models/Pagination';
+import { UserParams } from 'src/app/_models/UserParams';
+import { Member } from 'src/app/_models/member';
+import { User } from 'src/app/_models/user';
+import { AccountService } from 'src/app/_services/account.service';
+import { MembersService } from 'src/app/_services/members.service';
 
 @Component({
   selector: 'app-member-list',
   templateUrl: './member-list.component.html',
-  styleUrls: ['./member-list.component.css']
+  styleUrls: ['./member-list.component.css'],
 })
-export class MemberListComponent implements OnInit {
-
-
+export class MemberListComponent implements OnInit{
+  //members$: Observable<Member[]> | undefined
   members: Member[] = []
   pagination: Pagination | undefined
-  userParams: UserParams | undefined
-  user: User | undefined
-
+  userParams: UserParams | undefined 
+  user: User | undefined 
+  
   genderList = [
     { value: 'male', display: 'Male' },
     { value: 'female', display: 'Female' },
     { value: 'non-binary', display: 'Non-binary' },
   ]
-
   resetFilters() {
-    if (this.user)
+    if (this.user) {
       this.userParams = new UserParams(this.user)
-  }
+    }}
 
-  constructor(private accountService: AccountService, private memberService: MembersService) {
-    this.accountService.currentUser$.pipe(take(1)).subscribe({
-      next: user => {
-        if (user) this.user = user
-      }
-    })
-  }
+    constructor(private accountService: AccountService, private memberService: MembersService) {
+      this.accountService.currentUser$.pipe(take(1)).subscribe({
+        next: user => {
+          if (user) this.user = user
+        }
+      })
+    }
 
   ngOnInit(): void {
     this.resetFilters()
@@ -54,11 +56,14 @@ export class MemberListComponent implements OnInit {
 
   private _saveParams() {
     if (this.user)
-      localStorage.setItem('userParams', JSON.stringify({
-        username: this.user.username,
-        params: this.userParams
-      }))
+      localStorage.setItem('userParams', JSON.stringify({ 
+              username: this.user.username, 
+              params: this.userParams 
+            }))
   }
+
+
+
   loadMember() {
     if (this.userParams) {
       this._saveParams()
@@ -72,14 +77,15 @@ export class MemberListComponent implements OnInit {
       })
     }
   }
+  
 
   pageChanged(event: any) {
-    if (!this.userParams) return
-    if (this.userParams.pageNumber === event.page) return
-    this.userParams.pageNumber = event.page
-    this.loadMember()
+    if (!this.userParams) return 
+    if (this.userParams.pageNumber === event.page) return 
+      this.userParams.pageNumber = event.page
+      //this.memberService.setUserParams(this.userParams)
+      this.loadMember()
+    }
   }
-
-}
 
 

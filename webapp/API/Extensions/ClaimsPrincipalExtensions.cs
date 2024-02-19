@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 
 namespace API.Extensions;
 
@@ -13,4 +14,6 @@ public static class ClaimsPrincipalExtensions
         return null;
     }
 }
+
+
 

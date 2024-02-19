@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
-import { AccountService } from '../_services/account.service'
-import { Router } from '@angular/router'
-import { ToastrService } from 'ngx-toastr'
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms'
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AccountService } from '../_services/account.service';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
@@ -10,20 +10,15 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Vali
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-
+  validationErrors: string[] | undefined
   maxDate: Date = new Date() //
-
   registerForm: FormGroup = new FormGroup({})
-
   @Output() isCancel = new EventEmitter()
 
-  validationErrors: string[] | undefined
-
-  constructor(private formBuilder: FormBuilder, private toastr: ToastrService, private router: Router, private accountService: AccountService) { }
+  constructor(private formBuilder: FormBuilder,private toastr: ToastrService, private router: Router, private accountService: AccountService) { }
   ngOnInit(): void {
     this.initForm()
     this.maxDate.setFullYear(this.maxDate.getFullYear() - 18)
-
   }
 
   model: any = {}
@@ -34,7 +29,7 @@ export class RegisterComponent implements OnInit {
     return new Date(date.setMinutes(date.getMinutes() - date.getTimezoneOffset()))
       .toISOString().slice(0, 10)
   }
-
+  
   initForm() {
     this.registerForm = this.formBuilder.group({
       aka: [null, Validators.required],
@@ -50,35 +45,36 @@ export class RegisterComponent implements OnInit {
       next: _ => this.registerForm.controls['confirmPassword'].updateValueAndValidity()
     })
   }
+
   matchValue(matchTo: string): ValidatorFn {
     return (ctrl: AbstractControl) =>
       ctrl.value === ctrl.parent?.get(matchTo)?.value
         ? null
         : { notMatching: true }
   }
+
   register() {
     const birthDate = this.dateOnly(this.registerForm.controls['birthDate'].value)
     const registerData = { ...this.registerForm.value, birthDate }
     // this.accountService.register(this.model).subscribe({ ... })
     this.accountService.register(registerData).subscribe({
-      next: _ => {
+      next: response => {
         this.router.navigateByUrl('/members')
       },
       error: err => {
         this.validationErrors = err
       }
     })
-
-
   }
+  
   // register() {
-  //   //console.log(this.model)
+  //   // console.log(this.model)
   //   this.accountService.register(this.model).subscribe(
   //     {
   //       error: err => this.toastr.error(err),
-  //       next: () => this.router.navigateByUrl('/members')
-
-  //     }
+  //       next: () => this.router.navigateByUrl('/members'),
+        
+  //     }      
   //   )
   // }
 
@@ -86,5 +82,4 @@ export class RegisterComponent implements OnInit {
     console.log('cancel')
     this.isCancel.emit(true)
   }
-
 }

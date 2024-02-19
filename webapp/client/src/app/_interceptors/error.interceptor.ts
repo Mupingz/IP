@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core'
+import { Injectable } from '@angular/core';
 import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
   HttpErrorResponse
-} from '@angular/common/http'
-import { Observable, catchError } from 'rxjs'
-import { ToastrService } from 'ngx-toastr'
-import { NavigationExtras, Router } from '@angular/router'
+} from '@angular/common/http';
+import { Observable, catchError } from 'rxjs';
+import { NavigationExtras, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -19,37 +19,39 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((resp: HttpErrorResponse) => {
         if (resp) {
-          switch (resp.status) {
-            case 400:
-              const errors = resp.error.errors
-              if (errors) {
-                const modelStateErrs = []
-                for (const key in errors) {
-                  if (errors[key])
-                    modelStateErrs.push(errors[key])
-                }
-                throw modelStateErrs.flat()
-              } else
-                this.toastr.error(resp.error, resp.status.toString())
-              break
-            case 401:
-              this.toastr.error("Unauthorised", resp.status.toString())
-              break
-            case 404:
-              this.router.navigateByUrl('/not-found')
-              break
-            case 500:
-              const navigationExtras: NavigationExtras = { state: { errors: resp.error } }
-              this.router.navigateByUrl('/server-error', navigationExtras)
-              break
-            default:
-              this.toastr.error("Something unexpected went wrong")
-              console.log(resp)
-              break
-          }
+            switch (resp.status) {
+              case 400:
+                const errors = resp.error.errors
+                if (errors) {
+                  const modelStateErrs = []
+                  for (const key in errors) {
+                    if (errors[key])
+                      modelStateErrs.push(errors[key])
+                  }
+                  throw modelStateErrs.flat()
+                } else
+                  this.toastr.error(resp.error, resp.status.toString())
+                break
+                case 401:
+                  this.toastr.error("Unauthorised", resp.status.toString())
+                  break
+                case 404:
+                  this.router.navigateByUrl('/not-found')
+                  break
+                case 500:
+                  const navigationExtras: NavigationExtras = { state: { errors: resp.error } }
+                  this.router.navigateByUrl('/server-error', navigationExtras)
+                  break
+                default:
+                  this.toastr.error("Something unexpected went wrong")
+                  console.log(resp)
+                  break
+                break
+            }
         }
         throw resp
       })
     )
   }
 }
+

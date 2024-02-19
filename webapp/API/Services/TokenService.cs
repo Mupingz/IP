@@ -1,29 +1,32 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using API.Entities;
-using API.Interfaces;
+using API.Entities;//API.Entities
+using API.interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-
-
 
 namespace API.Services;
 
 public class TokenService : ITokenService
 {
     readonly SymmetricSecurityKey _privateKey;
+    private readonly UserManager<AppUser> _userManager;
 
-    public TokenService(IConfiguration configuration)
+    public TokenService(UserManager<AppUser> userManager, IConfiguration configuration)
     {
         _privateKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"]!));
+        _userManager = userManager;
     }
-    public string CreateToken(AppUser user)
+    public async Task<string> CreateToken(AppUser user)
     {
         var claims = new List<Claim> {
-            //new(JwtRegisteredClaimNames.NameId, user.UserName!)
             new(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
             new(JwtRegisteredClaimNames.UniqueName, user.UserName!),
+            // new(JwtRegisteredClaimNames.NameId, user.UserName!)
         };
+        var roles = await _userManager.GetRolesAsync(user);
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var credentials = new SigningCredentials(_privateKey, SecurityAlgorithms.HmacSha256Signature);
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -39,4 +42,9 @@ public class TokenService : ITokenService
 
         return tokenHandler.WriteToken(token);
     }
+
+    // public string CreateToken(Appuser user)
+    // {
+    //     throw new NotImplementedException();
+    // }
 }

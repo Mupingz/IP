@@ -1,7 +1,9 @@
 ﻿using API.Data;
 using API.Helpers;
+using API.interfaces;
 using API.Interfaces;
 using API.Services;
+using API.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Extensions;
@@ -12,19 +14,24 @@ public static class AppServiceExtensions
     {
         services.AddDbContext<DataContext>(opt =>
         {
-            opt.UseSqlite(conf.GetConnectionString("SQLiteConnection"));
+            opt.UseSqlite(conf.GetConnectionString("DefaultConnection"));
         });
         services.AddCors();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+        services.Configure<CloudinarySettings>(conf.GetSection("CloudinarySettings"));
+
         services.AddScoped<IImageService, ImageService>();
         services.AddScoped<LogUserActivity>();
         services.AddScoped<IlikesRepository, LikesRepository>();
-        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-        services.Configure<CloudinarySettings>(conf.GetSection("CloudinarySettings"));
         services.AddScoped<IMessageRepository, MessageRepository>();
 
+        services.AddSignalR();
+        services.AddSingleton<PresenceTracker>();
 
         return services;
     }
+
 }

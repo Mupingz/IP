@@ -1,6 +1,8 @@
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Helpers;
+
 public class PageList<T> : List<T>
 {
     public PageList(IEnumerable<T> items, int count, int pageNumber, int pageSize)
@@ -11,7 +13,6 @@ public class PageList<T> : List<T>
         TotalCount = count;
         AddRange(items);
     }
-
     public int CurrentPage { get; set; }
     public int PageSize { get; set; }
     public int TotalPages { get; set; }
@@ -23,6 +24,4 @@ public class PageList<T> : List<T>
         var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
         return new PageList<T>(items, count, pageNumber, pageSize);
     }
-
-
 }

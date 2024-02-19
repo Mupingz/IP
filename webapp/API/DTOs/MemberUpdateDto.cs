@@ -1,4 +1,4 @@
-namespace API.DTOs;
+﻿namespace API.DTOs;
 #nullable disable
 public class MemberUpdateDto
 {
