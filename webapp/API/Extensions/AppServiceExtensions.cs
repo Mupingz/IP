@@ -14,7 +14,7 @@ public static class AppServiceExtensions
     {
         services.AddDbContext<DataContext>(opt =>
         {
-            opt.UseSqlite(conf.GetConnectionString("DefaultConnection"));
+            opt.UseNpgsql(conf.GetConnectionString("PostgresConnetion"));
         });
         services.AddCors();
         services.AddScoped<ITokenService, TokenService>();

@@ -1,5 +1,6 @@
-import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http'
+import { Component } from '@angular/core'
+import { environment } from 'src/environments/environment'
 
 @Component({
   selector: 'app-test-error',
@@ -7,10 +8,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./test-error.component.css']
 })
 export class TestErrorComponent {
-getNotFoundError() {
-throw new Error('Method not implemented.');
-}
-  baseUrl = 'https://localhost:7777/api/'
+  getNotFoundError() {
+    throw new Error('Method not implemented.')
+  }
+  // baseUrl = 'https://localhost:7777/api/'
+  baseUrl = environment.apiUrl
+
   validationErrors: string[] = []
 
   constructor(private http: HttpClient) { }
@@ -34,7 +37,7 @@ throw new Error('Method not implemented.');
   getValidationError() {
     this.http.post(this.baseUrl + 'account/register', {}).subscribe({
       next: resp => console.log(resp),
-      error: err =>{
+      error: err => {
         console.log(err)
         this.validationErrors = err
       }

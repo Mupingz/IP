@@ -27,9 +27,14 @@ app.UseCors(builder => builder
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/message");
+app.MapFallbackToController("Index", "Fallback");
+
 
 
 using var scope = app.Services.CreateScope();
@@ -41,8 +46,10 @@ try
     var roleManager = service.GetRequiredService<RoleManager<AppRole>>();
     await dataContext.Database.MigrateAsync();
     await Seed.SeedUsers(userManager, roleManager);
+    await Seed.ClearConnections(dataContext);
 
-    await dataContext.Database.ExecuteSqlRawAsync("DELETE FROM [Connections]");
+
+    // await dataContext.Database.ExecuteSqlRawAsync("DELETE FROM [Connections]");
 }
 catch (System.Exception e)
 {

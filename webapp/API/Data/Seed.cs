@@ -10,6 +10,10 @@ namespace API.Data;
 #nullable disable
 public class Seed
 {
+    public static async Task ClearConnections(DataContext dataContext)
+    {
+        await dataContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"Connections\""); //postgres
+    }
     public static async Task SeedUsers(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
     {
         if (await userManager.Users.AnyAsync()) return;
@@ -31,6 +35,9 @@ public class Seed
         foreach (var user in users)
         {
             user.UserName = user.UserName.ToLower();
+            user.Created = DateTime.SpecifyKind(user.Created, DateTimeKind.Utc); //
+            user.LastActive = DateTime.SpecifyKind(user.LastActive, DateTimeKind.Utc); //
+
             await userManager.CreateAsync(user, "P@ssw0rd");
             if (user.UserName == "menta")
                 await userManager.AddToRolesAsync(user, new[] { "Member", "Moderator" }); //
